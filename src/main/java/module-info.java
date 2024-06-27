@@ -1,0 +1,9 @@
+module Indexer {
+    requires org.jsoup;
+    requires org.mongodb.bson;
+    requires org.mongodb.driver.core;
+    requires org.mongodb.driver.sync.client;
+    requires java.desktop;
+    requires org.apache.opennlp.tools;
+    requires tika.core;
+}
