@@ -7,8 +7,8 @@ import rateLimit from "express-rate-limit";
 // @ts-ignore
 import xss from "xss-clean";
 import mongoSantize from "express-mongo-sanitize";
-// import AppError from "./utils/appError";
-// import globalErrorHandler from "./controllers/errorController";
+import AppError from "./utils/appError";
+import globalErrorHandler from "./controllers/errorController";
 import compression from 'compression';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -81,10 +81,10 @@ if(process.env.NODE_ENV==="development"){
 
 //routes
 
-// app.all("*",(req,res,next)=>{
-//     const err=new AppError(`Can't find ${req.originalUrl} on this server`,404);
-//     next(err);
-// });
+app.all("*",(req,res,next)=>{
+    const err=new AppError(`Can't find ${req.originalUrl} on this server`,404);
+    next(err);
+});
 
-// app.use(globalErrorHandler);
+app.use(globalErrorHandler);
 export default app
