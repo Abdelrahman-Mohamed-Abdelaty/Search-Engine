@@ -39,4 +39,5 @@ build/
 .idea
 IndexerAndCrawler/src/main/resources
 Server/config.env
+Server/dest/config.env
 Server/node_modules

@@ -1,5 +1,6 @@
 import helmet from "helmet";
-import express from 'express'
+import express, {query} from 'express'
+import Stemmer from './utils/stemmer'
 import morgan from "morgan";
 import path from "path";
 import cookieParser from 'cookie-parser';
@@ -12,9 +13,16 @@ import globalErrorHandler from "./controllers/errorController";
 import compression from 'compression';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import catchAsync from "./utils/catchAsync";
+import * as fs from "node:fs";
+import mongoose from "mongoose";
+import * as sea from "node:sea";
+import Page from './models/page';
+import InvertedIndex from "./models/invertedIndex";
+import {processPhraseMatchingSearch, searchHandler} from "./controllers/searchController";
 const app=express();
 app.set('view engine','pug');
-app.set('views',path.join(__dirname,'views'));
+app.set('views','./views');
 //middlewares
 app.enable('trust proxy');
 
@@ -79,7 +87,9 @@ if(process.env.NODE_ENV==="development"){
     app.use(morgan("dev"));
 }
 
+
 //routes
+app.get('/api/v1/',searchHandler,processPhraseMatchingSearch)
 
 app.all("*",(req,res,next)=>{
     const err=new AppError(`Can't find ${req.originalUrl} on this server`,404);

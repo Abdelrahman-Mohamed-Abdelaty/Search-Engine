@@ -12,13 +12,14 @@ const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 // @ts-ignore
 const xss_clean_1 = __importDefault(require("xss-clean"));
 const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
-// import AppError from "./utils/appError";
-// import globalErrorHandler from "./controllers/errorController";
+const appError_1 = __importDefault(require("./utils/appError"));
+const errorController_1 = __importDefault(require("./controllers/errorController"));
 const compression_1 = __importDefault(require("compression"));
 const cors_1 = __importDefault(require("cors"));
+const searchController_1 = require("./controllers/searchController");
 const app = (0, express_1.default)();
 app.set('view engine', 'pug');
-app.set('views', path_1.default.join(__dirname, 'views'));
+app.set('views', './views');
 //middlewares
 app.enable('trust proxy');
 //Implement CORS
@@ -78,9 +79,10 @@ if (process.env.NODE_ENV === "development") {
     app.use((0, morgan_1.default)("dev"));
 }
 //routes
-// app.all("*",(req,res,next)=>{
-//     const err=new AppError(`Can't find ${req.originalUrl} on this server`,404);
-//     next(err);
-// });
-// app.use(globalErrorHandler);
+app.get('/api/v1/', searchController_1.searchHandler, searchController_1.processPhraseMatchingSearch);
+app.all("*", (req, res, next) => {
+    const err = new appError_1.default(`Can't find ${req.originalUrl} on this server`, 404);
+    next(err);
+});
+app.use(errorController_1.default);
 exports.default = app;
