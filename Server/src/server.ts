@@ -1,5 +1,6 @@
 import path from "path";
-
+import Page from './models/page';
+import InvertedIndex from './models/invertedIndex';
 process.on('uncaughtException',err=>{
     console.log("ERROR 🔥: ",err)
     process.exit(1);
@@ -8,6 +9,7 @@ import app from './app';
 console.log(__dirname)
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import invertedIndex from "./models/invertedIndex";
 dotenv.config({path:"./config.env"})
 const PORT=process.env.PORT||3000;
 
@@ -18,7 +20,11 @@ const server=app.listen(PORT, ()=>{
         useNewUrlParser: true,
         useFindAndModify: false
 
-    }).then(r =>console.log("connected successfully to database"))
+    }).then(async r => {
+        console.log("connected successfully to database")
+        // console.log(await InvertedIndex.create({url:"test"}))
+        // console.log(await Page.create({url:"test"}))
+    })
 });
 process.on('unhandledRejection',(err:{name:string ,message:string})=>{
         console.log("ERROR 🔥: ",err.name,err.message)

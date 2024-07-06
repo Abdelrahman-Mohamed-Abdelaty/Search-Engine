@@ -69,20 +69,29 @@ export const processPhraseMatchingSearch=catchAsync(async (req,res,next)=>{
         })
     });
     let pages=await Page.find({url:{$in:urls}}).select('-rank');
+    const uniquePages={};
     pages=pages.filter( (page:any)=>{
-        let indexOfFoundWord=(page.content as string).indexOf(searchingQuery);
-        if(indexOfFoundWord==-1) return false;
+        if(uniquePages.hasOwnProperty(page.url)) return false;
+        // @ts-ignore
+        uniquePages[page.url]=1;
+        console.log(searchingQuery);
+        let regex = new RegExp("\\b" + searchingQuery + "\\b");
+
+        let match = page.content.match(regex);
+        let indexOfFoundWord;
+        if(match)
+            indexOfFoundWord=match.index;
+        else return false;
         let startIndex=Math.max(0,indexOfFoundWord-50);
         let lastIndex=Math.min(page.content.length,indexOfFoundWord+50);
-        page.matchedContent=page.content.slice(startIndex,indexOfFoundWord)+`<b>${searchingQuery}</b>`+
+        page.matchedContent=page.content.slice(startIndex,indexOfFoundWord)+`<b class="word-match">${searchingQuery}</b>`+
             page.content.slice(searchingQuery.length+indexOfFoundWord,lastIndex);
         page.content=null;
         return true;
     })
     pages= pages.sort((a:any,b:any)=>{
         return foundPages[b.url]-foundPages[a.url];
-    })
-
+    });
     pages=paginate(pages,req.query.limit,req.query.page);
     return res.status(200).json({
         status: "success",
@@ -119,16 +128,31 @@ export const searchHandler=catchAsync(async (req,res,next)=>{
     pages= pages.sort((a:any,b:any)=>{
         return foundPages[b.url]-foundPages[a.url];
     })
-    pages=paginate(pages,req.query.limit,req.query.page);
     //Bold the found Words
-    pages.forEach((page:any)=>{
-        let indexOfFoundWord=page.content.indexOf(foundWords[page.url]);
+    //for remove duplicate pages
+    const uniquePages={};
+    pages=pages.filter((page:any)=>{
+        if(uniquePages.hasOwnProperty(page.url)) return false;
+        // @ts-ignore
+        uniquePages[page.url]=1;
+        let regex
+        try{
+            regex = new RegExp("\\b" + foundWords[page.url] + "\\b");
+        }catch (er){
+            return false;
+        }
+        let match = page.content.match(regex);
+        if(!match) return false;
+        let indexOfFoundWord=match.index;
         let startIndex=Math.max(0,indexOfFoundWord-50);
         let lastIndex=Math.min(page.content.length,indexOfFoundWord+50);
-        page.matchedContent=page.content.slice(startIndex,indexOfFoundWord)+`<b>${foundWords[page.url]}</b>`+
+        page.matchedContent=page.content.slice(startIndex,indexOfFoundWord)+`<b class="word-match">${foundWords[page.url]}</b>`+
             page.content.slice(foundWords[page.url].length+indexOfFoundWord,lastIndex);
         page.content=null;
+        return true;
     })
+    pages=paginate(pages,req.query.limit,req.query.page);
+
     return res.status(200).json({
         status: "success",
         pages,

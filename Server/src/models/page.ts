@@ -6,8 +6,10 @@ const pageSchema= new mongoose.Schema({
     content: String,
     rank: Number,
     matchedContent:String,
-},{ collection: 'PagesCollection' })
-const Page=mongoose.model('PagesCollection',pageSchema);
+},{ collection: 'Pages' })
+const Page=mongoose.model('Pages',pageSchema);
+
 
 export default Page;
+
 

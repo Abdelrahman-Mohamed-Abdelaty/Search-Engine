@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Page from "./page";
 
 const invertedIndexSchema= new mongoose.Schema({
     stemmedWord:String,
@@ -11,6 +12,8 @@ const invertedIndexSchema= new mongoose.Schema({
             tf_idf:Number
         }]
     }]
-},{ collection: 'invertedIndex' })
-const invertedIndex=mongoose.model('invertedIndex',invertedIndexSchema);
+},{ collection: 'InvertedIndex'})
+const invertedIndex=mongoose.model('InvertedIndex',invertedIndexSchema);
+
+
 export default invertedIndex;

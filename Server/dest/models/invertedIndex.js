@@ -15,6 +15,6 @@ const invertedIndexSchema = new mongoose_1.default.Schema({
                     tf_idf: Number
                 }]
         }]
-}, { collection: 'invertedIndex' });
-const invertedIndex = mongoose_1.default.model('invertedIndex', invertedIndexSchema);
+}, { collection: 'InvertedIndex' });
+const invertedIndex = mongoose_1.default.model('InvertedIndex', invertedIndexSchema);
 exports.default = invertedIndex;

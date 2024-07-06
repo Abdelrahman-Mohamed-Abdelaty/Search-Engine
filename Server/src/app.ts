@@ -12,25 +12,18 @@ import AppError from "./utils/appError";
 import globalErrorHandler from "./controllers/errorController";
 import compression from 'compression';
 import cors from 'cors';
-import bodyParser from 'body-parser';
-import catchAsync from "./utils/catchAsync";
-import * as fs from "node:fs";
-import mongoose from "mongoose";
-import * as sea from "node:sea";
-import Page from './models/page';
-import InvertedIndex from "./models/invertedIndex";
 import {processPhraseMatchingSearch, searchHandler} from "./controllers/searchController";
 const app=express();
 app.set('view engine','pug');
 app.set('views','./views');
 //middlewares
-app.enable('trust proxy');
+// app.enable('trust proxy');
 
 //Implement CORS
 app.use(cors());
 //here we apply preflight request
 app.options('*',cors());
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static('./public'));
 //Set security headers
 app.use(
     helmet({
@@ -89,6 +82,10 @@ if(process.env.NODE_ENV==="development"){
 
 
 //routes
+app.get('/',(req,res,next)=>{
+    res.render('index');
+})
+
 app.get('/api/v1/',searchHandler,processPhraseMatchingSearch)
 
 app.all("*",(req,res,next)=>{

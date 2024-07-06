@@ -60,7 +60,7 @@ const sendErrorProd=(err:any,req:any,res:any)=>{
         console.error("Error 💣️💣️💣️", err);
         return res.status(err.statusCode).render('error',{
             msg: err.message,
-            title:'error'
+            title:'error',
         })
     }
     //programming errors

@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node ./dest/server.js",
     "start:dev": "tsc & NODE_ENV=development nodemon ./dest/server.js",
-    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
-    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
+    "watch:js": "parcel watch ./public/javascripts/index.js --out-dir ./public/javascripts --out-file bundle.js",
+    "build:js": "parcel build ./public/javascripts/index.js --out-dir ./public/javascripts --out-file bundle.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",

@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const helmet_1 = __importDefault(require("helmet"));
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
-const path_1 = __importDefault(require("path"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 // @ts-ignore
@@ -21,12 +20,12 @@ const app = (0, express_1.default)();
 app.set('view engine', 'pug');
 app.set('views', './views');
 //middlewares
-app.enable('trust proxy');
+// app.enable('trust proxy');
 //Implement CORS
 app.use((0, cors_1.default)());
 //here we apply preflight request
 app.options('*', (0, cors_1.default)());
-app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
+app.use(express_1.default.static('./public'));
 //Set security headers
 app.use((0, helmet_1.default)({
     contentSecurityPolicy: {
@@ -79,6 +78,9 @@ if (process.env.NODE_ENV === "development") {
     app.use((0, morgan_1.default)("dev"));
 }
 //routes
+app.get('/', (req, res, next) => {
+    res.render('index');
+});
 app.get('/api/v1/', searchController_1.searchHandler, searchController_1.processPhraseMatchingSearch);
 app.all("*", (req, res, next) => {
     const err = new appError_1.default(`Can't find ${req.originalUrl} on this server`, 404);
